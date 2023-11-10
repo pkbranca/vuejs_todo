@@ -3,9 +3,17 @@
     <div class="card m-auto p-6 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <h4 class="font-sans font-bold text-xl mb-5">To Do List</h4>
       <ToDoForm v-bind:editTask="currentTask" @addTask="addTask"/>
-      <TaskList v-bind:tasks="tasks" @updateStatus="updateStatus" @editTaskInformation="editTaskInformation"/>
+      <TaskList v-bind:tasks="tasks" @updateStatus="updateStatus" 
+      @deleteTaskInformation="deleteTaskInformation"
+      @editTaskInformation="editTaskInformation"/>
     </div>
-
+     <confirm-delete
+      v-show="isConfirmDeleteModalVisible"
+      modalHeadline="Delete task"
+      deleteMessage="Are you sure?"
+      @deleteRecordEvent="deleteTaskConfirmation"
+      @close="closeConfirmDeleteModal"
+    />    
   </div>
 </template>
 
@@ -13,22 +21,20 @@
 import ToDoForm from './components/ToDoForm.vue';
 import TaskList from './components/TaskList.vue';
 import { v4 as uuidv4 } from 'uuid';
-
+import ConfirmDelete from './components/ConfirmDelete.vue';
 import 'vue-toast-notification/dist/theme-bootstrap.css'
-import { useToast } from 'vue-toast-notification';
+
 
 export default {
-  setup(){
-   const toast = useToast();
-   return {toast}
- },
   name: 'App',
   components: {
     ToDoForm,
-    TaskList
+    TaskList,
+    ConfirmDelete
   },
   data() {
     return {
+    isConfirmDeleteModalVisible: false,
     currentTask: {
       id: '',
       name: '',
@@ -42,6 +48,19 @@ export default {
     }
   },
   methods: {
+    deleteTaskConfirmation(){
+      this.isConfirmDeleteModalVisible = false;
+      this.tasks = this.tasks.filter(x=> x.id !== this.currentTask.id);
+      this.cleanCurrentTask();
+    },
+    closeConfirmDeleteModal(){
+      this.isConfirmDeleteModalVisible = false;
+    },
+
+    deleteTaskInformation(e){
+      this.isConfirmDeleteModalVisible= true;
+      this.currentTask = e;
+    },
     addTask(e){
       if(e.task.date !== "" && e.task.name !== "" ){
         if(e.task.id !== ""){
@@ -54,13 +73,7 @@ export default {
           this.tasks.push(e.task);
         }
 
-        this.currentTask = {
-          id: '',
-          name: '',
-          date: '',
-          done: false
-        };
-
+        this.cleanCurrentTask();
         this.$toast.open('Task saved');
       }
     },
@@ -70,7 +83,16 @@ export default {
     updateStatus(updateId){
       const toDoToUpdate = this.tasks.find((item) => item.id === updateId);
       toDoToUpdate.done = !toDoToUpdate.done;
+    },
+    cleanCurrentTask(){
+      this.currentTask = {
+          id: '',
+          name: '',
+          date: '',
+          done: false
+        };
     }
+
   }
 }
 </script>
