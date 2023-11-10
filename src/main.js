@@ -6,10 +6,13 @@ import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+// import Toasted from 'vue-toasted';
 
 import './index.css'
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-default.css';
 
 /* add icons to the library */
 library.add(faUserSecret)
@@ -24,6 +27,10 @@ Object.defineProperties(Vue.prototype, {
             return dayjs
         }
     }
+});
+
+Vue.use(VueToast, {
+  position: 'top-right'
 });
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

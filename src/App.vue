@@ -5,6 +5,7 @@
       <ToDoForm v-bind:editTask="currentTask" @addTask="addTask"/>
       <TaskList v-bind:tasks="tasks" @updateStatus="updateStatus" @editTaskInformation="editTaskInformation"/>
     </div>
+
   </div>
 </template>
 
@@ -13,8 +14,14 @@ import ToDoForm from './components/ToDoForm.vue';
 import TaskList from './components/TaskList.vue';
 import { v4 as uuidv4 } from 'uuid';
 
+import 'vue-toast-notification/dist/theme-bootstrap.css'
+import { useToast } from 'vue-toast-notification';
 
 export default {
+  setup(){
+   const toast = useToast();
+   return {toast}
+ },
   name: 'App',
   components: {
     ToDoForm,
@@ -53,11 +60,12 @@ export default {
           date: '',
           done: false
         };
+
+        this.$toast.open('Task saved');
       }
     },
     editTaskInformation(editTask){
       this.currentTask = editTask;
-
     },
     updateStatus(updateId){
       const toDoToUpdate = this.tasks.find((item) => item.id === updateId);
@@ -79,6 +87,7 @@ export default {
 }
 
 .card{
+  width: 600px;
   background-color: #f9f9f9;
 }
 @media only screen and (max-width: 1024px) {
