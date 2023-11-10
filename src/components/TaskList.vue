@@ -18,7 +18,10 @@
             <font-awesome-icon icon="fa-solid fa-pen"></font-awesome-icon>
             <div class="inline ml-2">Edit task</div>
           </div>
-
+          <div class="p-3 popOverOption" @click="cloneInformation(task)">
+            <font-awesome-icon icon="fa-solid fa-clone"></font-awesome-icon>
+            <div class="inline ml-2">Clone task</div>
+          </div>
           <div class="p-3 popOverOption" @click="deleteTaskInformation(task)">
             <font-awesome-icon icon="fa-solid fa-trash"></font-awesome-icon>
             <div class="inline ml-2">Delete task</div>
@@ -41,6 +44,10 @@ export default {
   methods:{
     updateTaskStatus(task){
       this.$emit('updateStatus', task.id);
+    },
+    cloneInformation(task){
+      this.taskOptionOpen = {};
+      this.$emit('cloneInformation',task);
     },
     editTaskInformation(task){
       this.taskOptionOpen = {};
@@ -66,7 +73,7 @@ export default {
     border: 1px solid #ededed;
     position: absolute;
     background-color: #FFF;
-    left: -75px;
+    left: -90px;
     width: 150px;
     z-index: 2;
   }

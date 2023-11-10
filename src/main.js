@@ -6,6 +6,7 @@ import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faClone } from '@fortawesome/free-solid-svg-icons'
 // import Toasted from 'vue-toasted';
 
 import './index.css'
@@ -19,6 +20,8 @@ library.add(faUserSecret)
 library.add(faEllipsisVertical);
 library.add(faPen);
 library.add(faTrash);
+library.add(faClone);
+
 
 dayjs.extend(relativeTime);
 Object.defineProperties(Vue.prototype, {

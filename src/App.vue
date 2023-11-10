@@ -4,8 +4,9 @@
       <h4 class="font-sans font-bold text-xl mb-5">To Do List</h4>
       <ToDoForm v-bind:editTask="currentTask" @addTask="addTask"/>
       <TaskList v-bind:tasks="tasks" @updateStatus="updateStatus" 
-      @deleteTaskInformation="deleteTaskInformation"
-      @editTaskInformation="editTaskInformation"/>
+        @deleteTaskInformation="deleteTaskInformation"
+        @cloneInformation="cloneInformation"
+        @editTaskInformation="editTaskInformation"/>
     </div>
      <confirm-delete
       v-show="isConfirmDeleteModalVisible"
@@ -35,6 +36,7 @@ export default {
   data() {
     return {
     isConfirmDeleteModalVisible: false,
+    deleteTaskId: '',
     currentTask: {
       id: '',
       name: '',
@@ -50,16 +52,25 @@ export default {
   methods: {
     deleteTaskConfirmation(){
       this.isConfirmDeleteModalVisible = false;
-      this.tasks = this.tasks.filter(x=> x.id !== this.currentTask.id);
-      this.cleanCurrentTask();
+      this.tasks = this.tasks.filter(x=> x.id !== this.deleteTaskId);
+      this.deleteTaskId = '';
     },
+    
     closeConfirmDeleteModal(){
       this.isConfirmDeleteModalVisible = false;
     },
-
+    cloneInformation(e){
+      let cloneTask = {
+        id: uuidv4(),
+        name: e.name,
+        date: e.date,
+        task: e.task
+      };
+      this.tasks.push(cloneTask);
+    },
     deleteTaskInformation(e){
       this.isConfirmDeleteModalVisible= true;
-      this.currentTask = e;
+      this.deleteTaskId = e.id;
     },
     addTask(e){
       if(e.task.date !== "" && e.task.name !== "" ){
