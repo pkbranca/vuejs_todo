@@ -3,7 +3,8 @@
     <div class="card m-auto p-6 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <h4 class="font-sans font-bold text-xl mb-5">To Do List</h4>
       <ToDoForm v-bind:editTask="currentTask" @addTask="addTask"/>
-      <TaskList v-bind:tasks="tasks" @updateStatus="updateStatus" 
+      <TaskList
+        @updateStatus="updateStatus" 
         @deleteTaskInformation="deleteTaskInformation"
         @cloneInformation="cloneInformation"
         @editTaskInformation="editTaskInformation"/>
@@ -24,6 +25,9 @@ import TaskList from './components/TaskList.vue';
 import { v4 as uuidv4 } from 'uuid';
 import ConfirmDelete from './components/ConfirmDelete.vue';
 import 'vue-toast-notification/dist/theme-bootstrap.css'
+import { mapGetters } from 'vuex'
+
+
 
 
 export default {
@@ -37,28 +41,26 @@ export default {
     return {
     isConfirmDeleteModalVisible: false,
     deleteTaskId: '',
-    currentTask: {
-      id: '',
-      name: '',
-      date: '',
-      done: false
-    },
-    tasks: [
-      { id: '4fe2d942-584b-439b-a5fc-bd9f564d8d47', name: 'lusho', date: '2016-04-10', done: false},
-      { id: '299f289c-01de-482b-af0c-0cf108401e8f',name: 'donlusho', date: '2016-04-11', done: true}
-      ]
+      currentTask: {
+        id: '',
+        name: '',
+        date: '',
+        done: false
+      },
     }
   },
+
   methods: {
     deleteTaskConfirmation(){
       this.isConfirmDeleteModalVisible = false;
-      this.tasks = this.tasks.filter(x=> x.id !== this.deleteTaskId);
+      this.$store.commit('deleteTask', this.deleteTaskId);
       this.deleteTaskId = '';
     },
     
     closeConfirmDeleteModal(){
       this.isConfirmDeleteModalVisible = false;
     },
+
     cloneInformation(e){
       let cloneTask = {
         id: uuidv4(),
@@ -66,7 +68,7 @@ export default {
         date: e.date,
         task: e.task
       };
-      this.tasks.push(cloneTask);
+      this.$store.commit('addTask', cloneTask);
     },
     deleteTaskInformation(e){
       this.isConfirmDeleteModalVisible= true;
@@ -75,25 +77,20 @@ export default {
     addTask(e){
       if(e.task.date !== "" && e.task.name !== "" ){
         if(e.task.id !== ""){
-          const taskUpdate = this.tasks.find((x)=> x.id === e.task.id);
-          taskUpdate.name = e.task.name;
-          taskUpdate.date = e.task.date;
-          taskUpdate.done = e.task.done;
+          this.$store.commit('editTask', e.task);
         }else{
           e.task.id = uuidv4();
-          this.tasks.push(e.task);
+          this.$store.commit('addTask', e.task);
         }
-
         this.cleanCurrentTask();
         this.$toast.open('Task saved');
       }
     },
     editTaskInformation(editTask){
-      this.currentTask = editTask;
+      this.currentTask = { ...editTask };
     },
     updateStatus(updateId){
-      const toDoToUpdate = this.tasks.find((item) => item.id === updateId);
-      toDoToUpdate.done = !toDoToUpdate.done;
+      this.$store.commit('updateStatus', updateId);
     },
     cleanCurrentTask(){
       this.currentTask = {

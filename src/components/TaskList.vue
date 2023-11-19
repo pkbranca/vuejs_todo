@@ -1,7 +1,9 @@
 <template>
   <div class="mt-5 text-left">
     <div class="card taskContainer w-100 mb-6 p-4 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 justify-between"
-      v-for="(task, index) in tasks" :key="index" >
+      v-for="(task, index) in allTasks" :key="index" 
+      :class="{ expired : ($date(task?.date) < new Date() && !task.done )}"
+      >
       <div class="flex">
         <div class="task_radio cursor-pointer" :class="{'selected': task?.done}" @click="updateTaskStatus(task)" >
             <div class="check"></div>
@@ -32,13 +34,17 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
-  props:  ['tasks'],
+  computed: {
+    ...mapGetters([
+      'allTasks'
+    ])
+  },
   data: function(){
     return{
       taskOptionOpen: {},
-
     }
   },
   methods:{
@@ -69,7 +75,10 @@ export default {
 </script>
 
 <style scoped>
-  .task_optionsPopover{
+.card.expired{
+  background-color: #ff9898;
+}
+.task_optionsPopover{
     border: 1px solid #ededed;
     position: absolute;
     background-color: #FFF;

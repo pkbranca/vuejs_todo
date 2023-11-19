@@ -7,6 +7,7 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faClone } from '@fortawesome/free-solid-svg-icons'
+import { store } from './store/store'
 // import Toasted from 'vue-toasted';
 
 import './index.css'
@@ -41,4 +42,5 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  store: store,
 }).$mount('#app')
